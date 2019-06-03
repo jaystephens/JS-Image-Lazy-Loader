@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
+  
+    <title>Document</title>
+</head>
+<body>
+
+<script charset="utf-8" type="text/javascript">
+    var lazy = [];
+    
+        registerListener('load', setLazy);
+        registerListener('load', lazyLoad);
+        registerListener('scroll', lazyLoad);
+        registerListener('resize', lazyLoad);
+    
+        function setLazy(){		
+            lazy = document.getElementsByClassName('lazy');
+            console.log('Found ' + lazy.length + ' lazy images');
+        } 
+    
+        function lazyLoad(){
+            for(var i=0; i<lazy.length; i++){
+                if(isInViewport(lazy[i])){
+                    if (lazy[i].getAttribute('data-src')){
+                        lazy[i].removeAttribute('src');
+                        lazy[i].src = lazy[i].getAttribute('data-src');
+                        lazy[i].removeAttribute('data-src');
+                    }
+                }
+            }
+    
+            cleanLazy();
+        }
+    
+        function cleanLazy(){
+            lazy = Array.prototype.filter.call(lazy, function(l){ return l.getAttribute('data-src');});
+        }
+    
+        function isInViewport(el){
+            var rect = el.getBoundingClientRect();
+    
+            return (
+                rect.bottom >= 0 && 
+                rect.right >= 0 && 
+                rect.top <= (window.innerHeight || document.documentElement.clientHeight) && 
+                rect.left <= (window.innerWidth || document.documentElement.clientWidth)
+                );
+        }
+    
+        function registerListener(event, func) {
+            if (window.addEventListener) {
+                window.addEventListener(event, func)
+            } else {
+                window.attachEvent('on' + event, func)
+            }
+        }
+    </script>    
+    <img class="lazy" src="media/images/ajax-loader.gif" data-src="media/images/7277.jpg" alt="" />
+</body>
+</html>
